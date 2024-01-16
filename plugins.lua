@@ -23,6 +23,27 @@ local plugins = {
     end,
   },
 
+  -- Override the whole comment nvim plugin. make it better later
+  {
+    "numToStr/Comment.nvim",
+    keys = {
+      { "gcc", mode = "n",          desc = "Comment toggle current line" },
+      { "gc",  mode = { "n", "o" }, desc = "Comment toggle linewise" },
+      { "gc",  mode = "x",          desc = "Comment toggle linewise (visual)" },
+      { "gbc", mode = "n",          desc = "Comment toggle current block" },
+      { "gb",  mode = { "n", "o" }, desc = "Comment toggle blockwise" },
+      { "gb",  mode = "x",          desc = "Comment toggle blockwise (visual)" },
+    },
+    init = function()
+      require("core.utils").load_mappings "comment"
+    end,
+    config = function(_, opts)
+      require("Comment").setup {
+        pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
+      }
+    end,
+  },
+
   {
     "nvim-treesitter/nvim-treesitter",
     dependencies = {
@@ -149,12 +170,12 @@ local plugins = {
       -- Populate the keys based on the user's options
       local opts = require("lazy.core.plugin").values(plugin, "opts", false)
       local mappings = {
-        { opts.mappings.add, desc = "Add surrounding", mode = { "n", "v" } },
-        { opts.mappings.delete, desc = "Delete surrounding" },
-        { opts.mappings.find, desc = "Find right surrounding" },
-        { opts.mappings.find_left, desc = "Find left surrounding" },
-        { opts.mappings.highlight, desc = "Highlight surrounding" },
-        { opts.mappings.replace, desc = "Replace surrounding" },
+        { opts.mappings.add,            desc = "Add surrounding",                     mode = { "n", "v" } },
+        { opts.mappings.delete,         desc = "Delete surrounding" },
+        { opts.mappings.find,           desc = "Find right surrounding" },
+        { opts.mappings.find_left,      desc = "Find left surrounding" },
+        { opts.mappings.highlight,      desc = "Highlight surrounding" },
+        { opts.mappings.replace,        desc = "Replace surrounding" },
         { opts.mappings.update_n_lines, desc = "Update `MiniSurround.config.n_lines`" },
       }
       return vim.list_extend(mappings, keys)

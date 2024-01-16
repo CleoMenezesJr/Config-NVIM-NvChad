@@ -97,13 +97,6 @@ M.treesitter = function()
   conf.autotag = {
     enable = true,
   }
-  conf.context_commentstring = {
-    enable = true,
-    config = {
-      astro = "<!-- %s -->",
-      blueprint = "// %s",
-    },
-  }
 
   return conf
 end

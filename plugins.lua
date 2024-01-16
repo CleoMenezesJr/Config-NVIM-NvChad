@@ -26,7 +26,18 @@ local plugins = {
   {
     "nvim-treesitter/nvim-treesitter",
     dependencies = {
-      "JoosepAlviste/nvim-ts-context-commentstring",
+      {
+        "JoosepAlviste/nvim-ts-context-commentstring",
+        config = function()
+          require("ts_context_commentstring").setup {
+            enable_autocmd = false,
+            languages = {
+              astro = "<!-- %s -->",
+              blueprint = "// %s",
+            },
+          }
+        end,
+      },
       "windwp/nvim-ts-autotag",
     },
     opts = overrides.treesitter(),

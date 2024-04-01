@@ -121,13 +121,13 @@ local plugins = {
         segments = {
           -- { text = { builtin.foldfunc, " " }, click = "v:lua.ScFa" },
           {
-            sign = { name = { ".*" }, maxwidth = 1, colwidth = 2, auto = false, wrap = false },
+            sign = { name = { ".*" }, maxwidth = 1, colwidth = 0, auto = false, wrap = false },
             click = "v:lua.ScSa",
           },
           { text = { builtin.lnumfunc, "" }, click = "v:lua.ScLa" },
           {
             -- sign = { name = { ".*" }, namespace = { "gitsigns" }, colwidth = 1, fillchar = "▏" },
-            sign = { name = { ".*" }, namespace = { "gitsigns" }, colwidth = 1 },
+            sign = { name = { ".*" }, namespace = { "gitsigns" }, colwidth = 2 },
             click = "v:lua.ScSa",
           },
         },
@@ -184,6 +184,16 @@ local plugins = {
     config = function(_, opts)
       require("mini.surround").setup(opts)
     end,
+  },
+  {
+    "miversen33/sunglasses.nvim",
+    event = "UIEnter",
+    config = function(_, opts)
+      require("sunglasses").setup({
+        filter_type = "SHADE",
+        filter_percent = .15
+      })
+    end
   },
   -- {
   --   "nvimdev/lspsaga.nvim",

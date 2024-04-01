@@ -20,7 +20,8 @@ local servers = {
   "lemminx",
   "blueprint_ls",
   "astro",
-  "swift_mesonls"
+  "swift_mesonls",
+  -- "ruff_lsp",
 }
 
 for _, lsp in ipairs(servers) do
@@ -32,38 +33,95 @@ for _, lsp in ipairs(servers) do
 end
 
 lspconfig.pylsp.setup {
-  cmd_env = { VIRTUAL_ENV = "$HOMEl/" },
   settings = {
     pylsp = {
       plugins = {
-        -- formatter options
+        ruff = {
+          enabled = true,                      -- Enable the plugin
+          -- executable = "<path-to-ruff-bin>",   -- Custom path to ruff
+          -- path = "<path_to_custom_ruff_toml>", -- Custom config for ruff to use
+          extendSelect = { "I" },              -- Rules that are additionally used by ruff
+          extendIgnore = { "C90" },            -- Rules that are additionally ignored by ruff
+          format = { "I" },                    -- Rules that are marked as fixable by ruff that should be fixed when running textDocument/formatting
+          severities = { ["D212"] = "I" },     -- Optional table of rules where a custom severity is desired
+          unsafeFixes = false,                 -- Whether or not to offer unsafe fixes as code actions. Ignored with the "Fix All" action
+
+          -- Rules that are ignored when a pyproject.toml or ruff.toml is present:
+          lineLength = 79,                                 -- Line length to pass to ruff checking and formatting
+          exclude = { "__about__.py" },                    -- Files to be excluded by ruff checking
+          select = { "F" },                                -- Rules to be enabled by ruff
+          ignore = { "D210" },                             -- Rules to be ignored by ruff
+          perFileIgnores = { ["__init__.py"] = "CPY001" }, -- Rules that should be ignored for specific files
+          preview = false,                                 -- Whether to enable the preview style linting and formatting.
+          targetVersion = "py310",                         -- The minimum python version to target (applies for both linting and formatting).
+        },
         black = {
           enable = true,
-          line_length = 88,
+          line_length = 79,
         },
-        autopep8 = { enabled = false },
-        yapf = { enabled = false },
-        -- linter options
-        pylint = { enabled = true, executable = "pylint", args = { "--max-line-length=88" } },
-        pyflakes = { enabled = false },
         pycodestyle = {
-          enable = false,
-          maxLineLength = 88,
-          -- ignore = {'W391'},
+          enabled = true,
         },
-        -- type checker
-        pylsp_mypy = { enabled = false },
-        -- auto-completion options
-        jedi_completion = { fuzzy = true },
-        -- import sorting
-        pyls_isort = { enabled = true },
+        pyflakes = {
+          enabled = false,
+        },
+        mccabe = {
+          enabled = false,
+        },
       },
     },
   },
 }
-
--- lspconfig.pyright.setup { blabla}
-
+-- lspconfig.pylsp.setup {
+--   cmd_env = { VIRTUAL_ENV = "$HOMEl/" },
+--   settings = {
+--     pylsp = {
+--       plugins = {
+--         -- formatter options
+--         black = {
+--           enable = true,
+--           line_length = 79,
+--         },
+--         autopep8 = { enabled = false },
+--         yapf = { enabled = false },
+--         -- linter options
+--         pylint = { enabled = false, executable = "pylint", args = { "--max-line-length=79" } }, -- disabled by ruff by default, reenable if remove ruff
+--         pyflakes = { enabled = false },
+--         pycodestyle = {
+--           enable = false,
+--           maxLineLength = 79,
+--           -- ignore = {'W391'},
+--         },
+--         -- type checker
+--         pylsp_mypy = { enabled = false },
+--         -- auto-completion options
+--         jedi_completion = { fuzzy = true },
+--         -- import sorting
+--         pyls_isort = { enabled = false }, -- disabled by ruff by default, reenable if remove ruff
+--         ruff = {
+--           enabled = true,                 -- Enable the plugin
+--           -- executable = "<path-to-ruff-bin>",   -- Custom path to ruff
+--           -- path = "<path_to_custom_ruff_toml>", -- Custom config for ruff to use
+--           extendSelect = { "I" },          -- Rules that are additionally used by ruff
+--           -- extendIgnore = { "C90" },            -- Rules that are additionally ignored by ruff
+--           format = { "I" },                -- Rules that are marked as fixable by ruff that should be fixed when running textDocument/formatting
+--           severities = { ["D212"] = "I" }, -- Optional table of rules where a custom severity is desired
+--           unsafeFixes = false,             -- Whether or not to offer unsafe fixes as code actions. Ignored with the "Fix All" action
+--
+--           -- Rules that are ignored when a pyproject.toml or ruff.toml is present:
+--           lineLength = 88,                                 -- Line length to pass to ruff checking and formatting
+--           exclude = { "__about__.py" },                    -- Files to be excluded by ruff checking
+--           select = { "F" },                                -- Rules to be enabled by ruff
+--           ignore = { "D210" },                             -- Rules to be ignored by ruff
+--           perFileIgnores = { ["__init__.py"] = "CPY001" }, -- Rules that should be ignored for specific files
+--           preview = true,                                 -- Whether to enable the preview style linting and formatting.
+--           targetVersion = "py310",                         -- The minimum python version to target (applies for both linting and formatting).
+--         },
+--       },
+--     },
+--   },
+-- }
+--
 vim.diagnostic.config {
   virtual_text = false,
   signs = true,
@@ -73,19 +131,19 @@ vim.diagnostic.config {
 }
 
 -- local signs = { Error = "○ ", Warn = "○ ", Hint = "○ ", Info = "○ " }
--- local signs = { Error = "🤬", Warn = "🖐️", Hint = "☝️", Info = "🤓" }
-local signs = { Error = " ", Warn = "󰗖 ", Hint = "󰦤 ", Info = "󰵛 " }
+local signs = { Error = "🤬", Warn = "🖐️", Hint = "☝️", Info = "🤓" }
+-- local signs = { Error = " ", Warn = "󰗖 ", Hint = "󰦤 ", Info = "󰵛 " }
 for type, icon in pairs(signs) do
   local hl = "DiagnosticSign" .. type
-  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 end
 
 -- Show line diagnostics automatically in hover window
 vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
   group = vim.api.nvim_create_augroup("float_diagnostic_cursor", { clear = true }),
-  callback = function ()
-    vim.diagnostic.open_float(nil, {focus=false, scope="cursor"})
-  end
+  callback = function()
+    vim.diagnostic.open_float(nil, { focus = false, scope = "cursor" })
+  end,
 })
 
 -- Go-to definition in a split window

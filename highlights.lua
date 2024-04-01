@@ -7,7 +7,9 @@ local M = {}
 ---@type Base46HLGroupsList
 M.override = {
   Comment = { italic = true },
-  IndentBlanklineContextStart = { bg = "statusline_bg" },
+  -- IndentBlanklineContextStart = { bg = "statusline_bg" },
+  IndentBlanklineContextStart = { bg = "one_bg" },
+  Visual = { bg = "one_bg3" },
   -- DiagnosticError = { italic = true },
   -- DiagnosticWarn = { italic = true },
   -- DiagnosticInformation = { italic = true },

@@ -185,16 +185,16 @@ local plugins = {
       require("mini.surround").setup(opts)
     end,
   },
-  {
-    "miversen33/sunglasses.nvim",
-    event = "UIEnter",
-    config = function(_, opts)
-      require("sunglasses").setup({
-        filter_type = "SHADE",
-        filter_percent = .15
-      })
-    end
-  },
+  -- {
+  --   "miversen33/sunglasses.nvim",
+  --   event = "UIEnter",
+  --   config = function(_, opts)
+  --     require("sunglasses").setup({
+  --       filter_type = "SHADE",
+  --       filter_percent = .15
+  --     })
+  --   end
+  -- },
   -- {
   --   "nvimdev/lspsaga.nvim",
   --   event = "LspAttach",

@@ -11,15 +11,15 @@ M.ui = {
 
   hl_override = highlights.override,
   hl_add = highlights.add,
-  tabufline = {
-    enabled = false,
-    -- Remove it if nvimtree is on the left again
-    overriden_modules = function(modules)
-      -- table.insert(modules, modules[1])
-      table.remove(modules, 1)
-      vim.cmd [[ set showtabline=0 ]]
-    end,
-  },
+  -- tabufline = {
+  --   enabled = false,
+  --   -- Remove it if nvimtree is on the left again
+  --   overriden_modules = function(modules)
+  --     -- table.insert(modules, modules[1])
+  --     table.remove(modules, 1)
+  --     vim.cmd [[ set showtabline=0 ]]
+  --   end,
+  -- },
 
   statusline = {
     theme = "default",
